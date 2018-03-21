@@ -1,29 +1,17 @@
-/*
-Copyright IBM Corp. 2016 All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-		 http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package leveldbhelper
 
 import (
 	"sync"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
-	"github.com/it-chain/it-chain-Engine/common"
 	"fmt"
 	"github.com/syndtr/goleveldb/leveldb/iterator"
 	"github.com/syndtr/goleveldb/leveldb/util"
+	"errors"
+	"strings"
+	"os"
+	"path"
+	"io"
 )
 
 type dbState int32
@@ -32,8 +20,6 @@ const (
 	closed dbState = iota
 	opened
 )
-
-var logger = common.GetLogger("leveldb_helper.go")
 
 type DB struct {
 	levelDBPath     string
@@ -76,11 +62,11 @@ func (db *DB) Open(){
 	var err error
 	var dirEmpty bool
 
-	if err = common.CreateDirIfMissing(dbPath); err != nil {
+	if err = createDirIfMissing(dbPath); err != nil {
 		panic(fmt.Sprintf("Error while trying to create dir if missing: %s", err))
 	}
 
-	dirEmpty ,err = common.DirEmpty(dbPath)
+	dirEmpty ,err = isdirEmpty(dbPath)
 
 	dbOpts.ErrorIfMissing = !dirEmpty
 
@@ -113,8 +99,7 @@ func (db *DB) Get(key []byte) ([]byte, error) {
 	}
 
 	if err != nil {
-		logger.Errorf("Error while trying to retrieve key [%#v]: %s", key, err)
-		return nil, err
+		return nil, errors.New("Error while trying to retrieve key "+string(key)+":"+err.Error())
 	}
 	return value, nil
 }
@@ -131,8 +116,7 @@ func (db *DB) Put(key []byte, value []byte, sync bool) error {
 
 	err := db.db.Put(key, value, wo)
 	if err != nil {
-		logger.Errorf("Error while trying to write key [%#v]", key)
-		return err
+		return errors.New("Error while trying to retrieve key "+string(key)+":"+err.Error())
 	}
 	return nil
 }
@@ -145,8 +129,7 @@ func (db *DB) Delete(key []byte, sync bool) error {
 	}
 	err := db.db.Delete(key, wo)
 	if err != nil {
-		logger.Errorf("Error while trying to delete key [%#v]", key)
-		return err
+		return errors.New("Error while trying to retrieve key "+string(key)+":"+err.Error())
 	}
 	return nil
 }
@@ -178,8 +161,7 @@ func (db *DB) Snapshot() (map[string][]byte, error) {
 	snap, err := db.db.GetSnapshot()
 
 	if err != nil {
-		logger.Error("Error while taking snapshot")
-		return nil, err
+		return nil, errors.New("Error while taking snapshot:"+err.Error())
 	}
 
 	data := make(map[string][]byte)
@@ -191,8 +173,38 @@ func (db *DB) Snapshot() (map[string][]byte, error) {
 	}
 	iter.Release()
 	if iter.Error() != nil {
-		logger.Error("Error with iterator")
 		return nil, iter.Error()
 	}
 	return data, nil
+}
+
+func createDirIfMissing(dirPath string) (error){
+
+	if !strings.HasSuffix(dirPath, "/") {
+		dirPath = dirPath + "/"
+	}
+
+	//logger.Debugf("CreateDirIfMissing [%s]", dirPath)
+
+	err := os.MkdirAll(path.Dir(dirPath), 0755)
+	if err != nil {
+		return errors.New(fmt.Sprintf("Error while creating dir [%s]", dirPath))
+	}
+
+	return nil
+}
+
+// DirEmpty returns true if the dir at dirPath is empty
+func isdirEmpty(dirPath string) (bool, error) {
+	f, err := os.Open(dirPath)
+	if err != nil {
+		return false, errors.New(fmt.Sprintf("Error while opening dir [%s]: %s", dirPath, err))
+	}
+	defer f.Close()
+
+	_, err = f.Readdir(1)
+	if err == io.EOF {
+		return true, nil
+	}
+	return false, err
 }
