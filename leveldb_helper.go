@@ -1,4 +1,4 @@
-package leveldbhelper
+package leveldbwrapper
 
 import (
 	"sync"
@@ -183,8 +183,6 @@ func createDirIfMissing(dirPath string) (error){
 	if !strings.HasSuffix(dirPath, "/") {
 		dirPath = dirPath + "/"
 	}
-
-	//logger.Debugf("CreateDirIfMissing [%s]", dirPath)
 
 	err := os.MkdirAll(path.Dir(dirPath), 0755)
 	if err != nil {

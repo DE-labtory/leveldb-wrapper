@@ -1,4 +1,4 @@
-package leveldbhelper
+package leveldbwrapper
 
 import (
 	"testing"

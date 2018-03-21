@@ -1,9 +1,8 @@
-package leveldbhelper
+package leveldbwrapper
 
 import (
 	"sync"
 	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/syndtr/goleveldb/leveldb/iterator"
 )
 
 type DBHandle struct {
@@ -65,7 +64,7 @@ func (h *DBHandle) WriteBatch(KVs map[string][]byte, sync bool) error {
 	return h.db.WriteBatch(batch, sync)
 }
 
-func (h *DBHandle) GetIteratorWithPrefix() iterator.Iterator {
+func (h *DBHandle) GetIteratorWithPrefix() KeyValueDBIterator {
 	return h.db.GetIteratorWithPrefix([]byte(h.dbName + "_"))
 }
 
