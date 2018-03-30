@@ -26,7 +26,7 @@ func (p *DBProvider) Close() {
 	p.db.Close()
 }
 
-func (p *DBProvider) GetDBHandle(dbName string) *DBHandle {
+func (p *DBProvider) GetDBHandle(dbName string) KeyValueDB {
 	p.mux.Lock()
 	defer p.mux.Unlock()
 
