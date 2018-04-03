@@ -3,6 +3,7 @@ package leveldbwrapper
 import (
 	"sync"
 	"github.com/syndtr/goleveldb/leveldb"
+	"github.com/it-chain/leveldb-wrapper/key_value_db"
 )
 
 type DBHandle struct {
@@ -26,7 +27,7 @@ func (p *DBProvider) Close() {
 	p.db.Close()
 }
 
-func (p *DBProvider) GetDBHandle(dbName string) KeyValueDB {
+func (p *DBProvider) GetDBHandle(dbName string) *DBHandle {
 	p.mux.Lock()
 	defer p.mux.Unlock()
 
@@ -61,10 +62,10 @@ func (h *DBHandle) WriteBatch(KVs map[string][]byte, sync bool) error {
 			batch.Put(key, v)
 		}
 	}
-	return h.db.WriteBatch(batch, sync)
+	return h.db.writeBatch(batch, sync)
 }
 
-func (h *DBHandle) GetIteratorWithPrefix() KeyValueDBIterator {
+func (h *DBHandle) GetIteratorWithPrefix() key_value_db.KeyValueDBIterator {
 	return h.db.GetIteratorWithPrefix([]byte(h.dbName + "_"))
 }
 
