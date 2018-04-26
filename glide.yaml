@@ -6,6 +6,7 @@ import:
   - leveldb/iterator
   - leveldb/opt
   - leveldb/util
+- package: github.com/jinzhu/copier
 testImport:
 - package: github.com/stretchr/testify
   version: v1.2.1
