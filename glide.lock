@@ -1,8 +1,10 @@
-hash: 0f35d479d4bf7ba7e1800ee810d1dc62b3e7249728db6619efeb7f37046e813c
-updated: 2018-03-21T15:56:34.232322+09:00
+hash: 867c91c8d64ac88f0dbd7f4cbe199023b264190c870b24d8041d3b59d2ce8f1d
+updated: 2018-04-26T20:25:01.2084621+09:00
 imports:
 - name: github.com/golang/snappy
   version: 553a641470496b2327abcac10b36396bd98e45c9
+- name: github.com/jinzhu/copier
+  version: 7e38e58719c33e0d44d585c4ab477a30f8cb82dd
 - name: github.com/syndtr/goleveldb
   version: 169b1b37be738edb2813dab48c97a549bcf99bb5
   subpackages:
