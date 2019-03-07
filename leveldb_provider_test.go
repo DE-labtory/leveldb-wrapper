@@ -1,16 +1,17 @@
 package leveldbwrapper
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"os"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
 func TestCreateNewDBProvider(t *testing.T) {
 	path := "./test_db_path"
 	dbProvider := CreateNewDBProvider(path)
-	defer func(){
+	defer func() {
 		dbProvider.Close()
 		os.RemoveAll(path)
 	}()
@@ -21,7 +22,7 @@ func TestCreateNewDBProvider(t *testing.T) {
 func TestDBProvider_Close(t *testing.T) {
 	path := "./test_db_path"
 	dbProvider := CreateNewDBProvider(path)
-	defer func(){
+	defer func() {
 		dbProvider.Close()
 		os.RemoveAll(path)
 	}()
@@ -34,7 +35,7 @@ func TestDBProvider_Close(t *testing.T) {
 func TestDBProvider_GetDBHandle(t *testing.T) {
 	path := "./test_db_path"
 	dbProvider := CreateNewDBProvider(path)
-	defer func(){
+	defer func() {
 		dbProvider.Close()
 		os.RemoveAll(path)
 	}()
@@ -59,7 +60,7 @@ func TestDBProvider_GetDBHandle(t *testing.T) {
 func TestDBHandle_Get(t *testing.T) {
 	path := "./test_db_path"
 	dbProvider := CreateNewDBProvider(path)
-	defer func(){
+	defer func() {
 		dbProvider.Close()
 		os.RemoveAll(path)
 	}()
@@ -92,7 +93,7 @@ func TestDBHandle_Get(t *testing.T) {
 func TestDBHandle_Put(t *testing.T) {
 	path := "./test_db_path"
 	dbProvider := CreateNewDBProvider(path)
-	defer func(){
+	defer func() {
 		dbProvider.Close()
 		os.RemoveAll(path)
 	}()
@@ -125,7 +126,7 @@ func TestDBHandle_Put(t *testing.T) {
 func TestDBHandle_Delete(t *testing.T) {
 	path := "./test_db_path"
 	dbProvider := CreateNewDBProvider(path)
-	defer func(){
+	defer func() {
 		dbProvider.Close()
 		os.RemoveAll(path)
 	}()

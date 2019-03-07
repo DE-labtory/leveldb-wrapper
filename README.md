@@ -78,7 +78,7 @@ type KeyValueDBIterator interface {
 ### Installation
 
 ```
-go get -u github.com/it-chain/leveldb-wrapper
+go get -u github.com/DE-labtory/leveldb-wrapper
 ```
 
 ### Usage
@@ -87,7 +87,7 @@ go get -u github.com/it-chain/leveldb-wrapper
 package main
 
 import (
-	"github.com/it-chain/leveldb-wrapper"
+	"github.com/DE-labtory/leveldb-wrapper"
 	"fmt"
 	"os"
 )
