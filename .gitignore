@@ -1,2 +1,5 @@
 ##goland
 .idea
+
+#vendor
+vendor/
