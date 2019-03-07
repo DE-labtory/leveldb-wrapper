@@ -1,15 +1,14 @@
 package leveldbwrapper
 
 import (
-	"os"
 	"testing"
-
 	"github.com/stretchr/testify/assert"
-	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
+	"os"
+	"github.com/syndtr/goleveldb/leveldb"
 )
 
-func getDB(path string) *DB {
+func getDB(path string) *DB{
 
 	readOpts := &opt.ReadOptions{}
 	writeOptsNoSync := &opt.WriteOptions{}
@@ -25,15 +24,15 @@ func getDB(path string) *DB {
 	}
 }
 
-func TestCreateNewDB(t *testing.T) {
+func TestCreateNewDB(t *testing.T){
 	//when
 	path := "./test_db_path"
 
 	//then
 	db := CreateNewDB(path)
 
-	assert.Equal(t, db.dbState, closed)
-	assert.Equal(t, db.levelDBPath, path)
+	assert.Equal(t,db.dbState,closed)
+	assert.Equal(t,db.levelDBPath,path)
 }
 
 func TestDB_Open(t *testing.T) {
@@ -49,8 +48,8 @@ func TestDB_Open(t *testing.T) {
 	}()
 
 	//result
-	assert.Equal(t, db.dbState, opened)
-	assert.NotNil(t, db.db)
+	assert.Equal(t,db.dbState,opened)
+	assert.NotNil(t,db.db)
 }
 
 func TestDB_Get_ExistValue(t *testing.T) {
@@ -63,8 +62,8 @@ func TestDB_Get_ExistValue(t *testing.T) {
 		os.RemoveAll(path)
 	}()
 
-	err := db.db.Put([]byte("jun"), []byte("jun"), nil)
-	if err != nil {
+	err := db.db.Put([]byte("jun"),[]byte("jun"),nil)
+	if err != nil{
 		t.Error("get error!")
 	}
 
@@ -72,7 +71,7 @@ func TestDB_Get_ExistValue(t *testing.T) {
 	byteValue, err := db.Get([]byte("jun"))
 
 	//result
-	assert.Equal(t, string(byteValue), "jun")
+	assert.Equal(t,string(byteValue),"jun")
 }
 
 func TestDB_Get_UNExistValue(t *testing.T) {
@@ -89,8 +88,8 @@ func TestDB_Get_UNExistValue(t *testing.T) {
 	byteValue, err := db.Get([]byte("jun"))
 
 	//result
-	assert.Equal(t, []byte(nil), byteValue)
-	assert.Equal(t, nil, err)
+	assert.Equal(t,[]byte(nil),byteValue)
+	assert.Equal(t,nil,err)
 }
 
 //없으면 write 있으면 update로 작용
@@ -105,14 +104,14 @@ func TestDB_Put(t *testing.T) {
 	}()
 
 	//then
-	db.Put([]byte("jun"), []byte("jun"), true)
+	db.Put([]byte("jun"),[]byte("jun"),true)
 
 	//result
-	byteValue, err := db.db.Get([]byte("jun"), nil)
-	if err != nil {
+	byteValue, err := db.db.Get([]byte("jun"),nil)
+	if err != nil{
 		t.Error("get error!")
 	}
-	assert.Equal(t, string(byteValue), "jun")
+	assert.Equal(t,string(byteValue),"jun")
 }
 
 //UNExistValue삭제는 아무것도 하지 않음 따라서 existValue만 체크
@@ -127,20 +126,20 @@ func TestDB_Delete_ExistValue(t *testing.T) {
 	}()
 
 	var err error
-	err = db.db.Put([]byte("jun"), []byte("jun"), nil)
-	if err != nil {
+	err = db.db.Put([]byte("jun"),[]byte("jun"),nil)
+	if err != nil{
 		t.Error("put error!")
 	}
 
 	//then
-	err = db.Delete([]byte("jun"), true)
-	if err != nil {
+	err = db.Delete([]byte("jun"),true)
+	if err != nil{
 		t.Error("delete error!")
 	}
 
-	_, err = db.db.Get([]byte("jun"), nil)
+	_, err = db.db.Get([]byte("jun"),nil)
 
-	assert.Equal(t, err, leveldb.ErrNotFound)
+	assert.Equal(t,err,leveldb.ErrNotFound)
 }
 
 func TestDB_WriteBatch(t *testing.T) {
@@ -156,14 +155,14 @@ func TestDB_WriteBatch(t *testing.T) {
 	//then
 	batch := new(leveldb.Batch)
 	batch.Put([]byte("jun"), []byte("jun"))
-	db.writeBatch(batch, true)
+	db.writeBatch(batch,true)
 
 	//result
-	byteValue, err := db.db.Get([]byte("jun"), nil)
-	if err != nil {
+	byteValue, err := db.db.Get([]byte("jun"),nil)
+	if err != nil{
 		t.Error("get error!")
 	}
-	assert.Equal(t, string(byteValue), "jun")
+	assert.Equal(t,string(byteValue),"jun")
 }
 
 func TestDB_snapSnapshot(t *testing.T) {
@@ -180,8 +179,10 @@ func TestDB_snapSnapshot(t *testing.T) {
 	batch.Put([]byte("key2"), []byte("val2"))
 	batch.Put([]byte("key3"), []byte("val3"))
 
-	db.writeBatch(batch, true)
 
+	db.writeBatch(batch,true)
+
+	
 	snap, err := db.Snapshot()
 	assert.NoError(t, err)
 
